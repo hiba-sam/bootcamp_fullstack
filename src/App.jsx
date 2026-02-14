@@ -5,12 +5,13 @@ const Button = ({ text, onClick }) => {
   return <button onClick={onClick}>{text}</button>
 }
 
-// StatisticLine component
+// StatisticLine component (table row)
 const StatisticLine = ({ text, value }) => {
   return (
-    <p>
-      {text}: {value}
-    </p>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
@@ -26,14 +27,16 @@ const Statistics = ({ good, neutral, bad }) => {
   const positive = (good / total) * 100
 
   return (
-    <div>
-      <StatisticLine text="good" value={good} />
-      <StatisticLine text="neutral" value={neutral} />
-      <StatisticLine text="bad" value={bad} />
-      <StatisticLine text="total" value={total} />
-      <StatisticLine text="average" value={average.toFixed(2)} />
-      <StatisticLine text="positive" value={positive.toFixed(2) + " %"} />
-    </div>
+    <table>
+      <tbody>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="total" value={total} />
+        <StatisticLine text="average" value={average.toFixed(2)} />
+        <StatisticLine text="positive" value={positive.toFixed(2) + " %"} />
+      </tbody>
+    </table>
   )
 }
 
