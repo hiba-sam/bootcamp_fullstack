@@ -6,21 +6,24 @@ const App = () => {
   ])
   const [newName, setNewName] = useState('')
 
-  // handle input change
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
-  // handle form submit
   const addPerson = (event) => {
-    event.preventDefault() // prevent page reload
+    event.preventDefault()
 
-    // create new person object
+    // Check for duplicate names
+    const nameExists = persons.some(person => person.name === newName)
+
+    if (nameExists) {
+      alert(`${newName} is already added to phonebook`)
+      return // exit without adding
+    }
+
     const personObject = { name: newName }
-
-    // update state
     setPersons(persons.concat(personObject))
-    setNewName('') // clear input
+    setNewName('')
   }
 
   return (
@@ -42,7 +45,6 @@ const App = () => {
         ))}
       </ul>
 
-      {/* debug */}
       <div>debug: {newName}</div>
     </div>
   )
