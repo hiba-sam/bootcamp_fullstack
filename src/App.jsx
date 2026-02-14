@@ -7,10 +7,6 @@ const Statistics = (props) => {
   const average = total === 0 ? 0 : (good - bad) / total
   const positive = total === 0 ? 0 : (good / total) * 100
 
-  if (total === 0) {
-    return <p>No feedback given</p>
-  }
-
   return (
     <div>
       <p>Good: {good}</p>
@@ -28,6 +24,8 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
+  
+  
   return (
     <div>
       <h1>Give feedback</h1>
