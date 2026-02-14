@@ -5,11 +5,8 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  // total number of feedback
   const total = good + neutral + bad
-  // average score: good=1, neutral=0, bad=-1
   const average = total === 0 ? 0 : (good * 1 + neutral * 0 + bad * -1) / total
-  // positive percentage
   const positive = total === 0 ? 0 : (good / total) * 100
 
   return (
