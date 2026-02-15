@@ -1,15 +1,69 @@
-const Header = (props) => {
-  return (<div> <h1>{props.course}</h1> </div>)
-}
-const Content = (props) => {
-  return (<div> <p>{props.part} {props.exercises}</p> </div>)
-}
-const Total = (props) => {
-  return (<div> <p>Number of exercises {props.exercises}</p> </div>)
-}
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+
 const App = () => {
-  const course = 'Half Stack application development'
-  const parts = [{ part: 'Fundamentals of React', exercises: 10 }, { part: 'Using props to pass data', exercises: 7 }, { part: 'State of a component', exercises: 14 }]
-  return (<div> <Header course={course} /> <Content part={parts[0].part} exercises={parts[0].exercises} /> <Content part={parts[1].part} exercises={parts[1].exercises} /> <Content part={parts[2].part} exercises={parts[2].exercises} /> <Total exercises={parts[0].exercises + parts[1].exercises + parts[2].exercises} /> </div>)
+  const [persons, setPersons] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
+
+  // 🔥 Fetch data once when component mounts
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
+
+  const addPerson = (event) => {
+    event.preventDefault()
+
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
+
+    axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNumber('')
+      })
+  }
+
+  const personsToShow = persons.filter(person =>
+    person.name.toLowerCase().includes(filter.toLowerCase())
+  )
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+
+      <Filter
+        filter={filter}
+        setFilter={setFilter}
+      />
+
+      <h3>Add a new</h3>
+
+      <PersonForm
+        addPerson={addPerson}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
+      />
+
+      <h3>Numbers</h3>
+
+      <Persons persons={personsToShow} />
+    </div>
+  )
 }
+
 export default App
