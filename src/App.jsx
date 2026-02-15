@@ -34,16 +34,19 @@ const App = () => {
                 p.id === existingPerson.id ? returnedPerson : p
               )
             )
-
             setNotification(`Updated ${returnedPerson.name}`)
             setNotificationType('success')
-
-            setTimeout(() => {
-              setNotification(null)
-            }, 5000)
-
+            setTimeout(() => setNotification(null), 5000)
             setNewName('')
             setNewNumber('')
+          })
+          .catch(error => {
+            setNotification(
+              `Information of ${existingPerson.name} has already been removed from server`
+            )
+            setNotificationType('error')
+            setTimeout(() => setNotification(null), 5000)
+            setPersons(persons.filter(p => p.id !== existingPerson.id))
           })
       }
     } else {
@@ -56,14 +59,9 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-
           setNotification(`Added ${returnedPerson.name}`)
           setNotificationType('success')
-
-          setTimeout(() => {
-            setNotification(null)
-          }, 5000)
-
+          setTimeout(() => setNotification(null), 5000)
           setNewName('')
           setNewNumber('')
         })
@@ -72,11 +70,18 @@ const App = () => {
 
   const deletePerson = (id) => {
     const person = persons.find(p => p.id === id)
-
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
         .remove(id)
         .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          setNotification(
+            `Information of ${person.name} has already been removed from server`
+          )
+          setNotificationType('error')
+          setTimeout(() => setNotification(null), 5000)
           setPersons(persons.filter(p => p.id !== id))
         })
     }
@@ -86,10 +91,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
 
-      <Notification 
-        message={notification} 
-        type={notificationType} 
-      />
+      <Notification message={notification} type={notificationType} />
 
       <form onSubmit={addPerson}>
         <div>
@@ -113,9 +115,7 @@ const App = () => {
       {persons.map(person =>
         <p key={person.id}>
           {person.name} {person.number}
-          <button onClick={() => deletePerson(person.id)}>
-            delete
-          </button>
+          <button onClick={() => deletePerson(person.id)}>delete</button>
         </p>
       )}
     </div>
