@@ -17,19 +17,40 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
+    const existingPerson = persons.find(p => p.name === newName)
 
-    personService
-      .create(personObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+    if (existingPerson) {
+      if (window.confirm(`${newName} is already added. Replace number?`)) {
+        const updatedPerson = { ...existingPerson, number: newNumber }
+
+        personService
+          .update(existingPerson.id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(
+              persons.map(p =>
+                p.id === existingPerson.id ? returnedPerson : p
+              )
+            )
+            setNewName('')
+            setNewNumber('')
+          })
+      }
+    } else {
+      const personObject = {
+        name: newName,
+        number: newNumber
+      }
+
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
   }
+
 
   const deletePerson = (id) => {
     const person = persons.find(p => p.id === id)
