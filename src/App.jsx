@@ -1,16 +1,11 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import Filter from './components/Filter'
-import PersonForm from './components/PersonForm'
-import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
-  const [filter, setFilter] = useState('')
 
-  // 🔥 Fetch data once when component mounts
   useEffect(() => {
     axios
       .get('http://localhost:3001/persons')
@@ -36,32 +31,30 @@ const App = () => {
       })
   }
 
-  const personsToShow = persons.filter(person =>
-    person.name.toLowerCase().includes(filter.toLowerCase())
-  )
-
   return (
     <div>
       <h2>Phonebook</h2>
 
-      <Filter
-        filter={filter}
-        setFilter={setFilter}
-      />
+      <form onSubmit={addPerson}>
+        <div>
+          name: 
+          <input value={newName}
+                 onChange={(e) => setNewName(e.target.value)} />
+        </div>
+        <div>
+          number: 
+          <input value={newNumber}
+                 onChange={(e) => setNewNumber(e.target.value)} />
+        </div>
+        <button type="submit">add</button>
+      </form>
 
-      <h3>Add a new</h3>
-
-      <PersonForm
-        addPerson={addPerson}
-        newName={newName}
-        setNewName={setNewName}
-        newNumber={newNumber}
-        setNewNumber={setNewNumber}
-      />
-
-      <h3>Numbers</h3>
-
-      <Persons persons={personsToShow} />
+      <h2>Numbers</h2>
+      {persons.map(person =>
+        <p key={person.id}>
+          {person.name} {person.number}
+        </p>
+      )}
     </div>
   )
 }
