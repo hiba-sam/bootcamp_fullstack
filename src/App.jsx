@@ -31,6 +31,18 @@ const App = () => {
       })
   }
 
+  const deletePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -53,8 +65,12 @@ const App = () => {
       {persons.map(person =>
         <p key={person.id}>
           {person.name} {person.number}
+          <button onClick={() => deletePerson(person.id)}>
+            delete
+          </button>
         </p>
       )}
+
     </div>
   )
 }
